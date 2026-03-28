@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mummy Delicious - Order Online</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.21.4/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --org:#f97316;--org2:#ea580c;--org3:#fed7aa;
+    --dark:#1a1008;--card:#2a1810;--mid:#4a3020;
+    --cream:#fef3e2;--white:#fffaf5;
+    --green:#25d366;--green2:#128c7e;
+    --text:#1a1008;--sub:#6b4c30;--dim:#9a7a5a;
+    --border:#f0d5b0;--shadow:rgba(249,115,22,0.15);
+  }
+  body{font-family:'Sora',sans-serif;background:var(--white);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+  /* ── NAV ── */
+  .nav{position:sticky;top:0;z-index:100;background:var(--dark);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.3);}
+  .nav-brand{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--org);font-weight:900;letter-spacing:-0.02em;}
+  .nav-brand span{color:var(--white);}
+  .cart-btn{position:relative;background:var(--org);border:none;border-radius:50px;padding:10px 20px;color:white;font-family:'Sora',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;}
+  .cart-btn:hover{background:var(--org2);transform:translateY(-1px);}
+  .cart-badge{background:var(--white);color:var(--org2);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;}
+
+  /* ── HERO ── */
+  .hero{background:linear-gradient(135deg,var(--dark) 0%,#3d1a06 100%);padding:48px 20px 36px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 50%,rgba(249,115,22,0.15) 0%,transparent 70%);}
+  .hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.3);border-radius:50px;padding:6px 16px;font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--org);margin-bottom:16px;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3rem);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:10px;}
+  .hero h1 em{color:var(--org);font-style:italic;}
+  .hero p{color:rgba(255,255,255,0.5);font-size:0.9rem;font-weight:300;}
+
+  /* ── CATEGORIES ── */
+  .cats{display:flex;gap:8px;overflow-x:auto;padding:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .cats::-webkit-scrollbar{display:none;}
+  .cat-btn{flex-shrink:0;padding:9px 20px;border-radius:50px;border:2px solid var(--border);background:transparent;font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;color:var(--sub);transition:all .2s;white-space:nowrap;}
+  .cat-btn.active,.cat-btn:hover{background:var(--org);border-color:var(--org);color:white;}
+
+  /* ── MENU ── */
+  .section-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--dark);padding:0 20px 16px;}
+  .food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;padding:0 20px 24px;}
+  @media(min-width:600px){.food-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}}
+  .food-card{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:all .25s;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+  .food-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px var(--shadow);}
+  .food-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,var(--org3) 0%,#fed7aa 100%);}
+  .food-info{padding:12px;}
+  .food-name{font-size:0.9rem;font-weight:700;color:var(--dark);margin-bottom:4px;line-height:1.3;}
+  .food-desc{font-size:0.72rem;color:var(--dim);font-weight:300;line-height:1.4;margin-bottom:10px;}
+  .food-footer{display:flex;align-items:center;justify-content:space-between;}
+  .food-price{font-size:1rem;font-weight:800;color:var(--org2);}
+  .add-btn{background:var(--org);border:none;border-radius:50%;width:34px;height:34px;color:white;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:300;}
+  .add-btn:hover{background:var(--org2);transform:scale(1.1);}
+  .add-btn.in-cart{background:var(--dark);}
+
+  /* ── CART PANEL ── */
+  .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;justify-content:flex-end;}
+  .cart-panel{background:var(--white);width:min(100%,420px);height:100%;overflow-y:auto;display:flex;flex-direction:column;}
+  .cart-header{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--border);background:var(--dark);}
+  .cart-header h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--white);font-weight:700;}
+  .close-btn{background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;color:white;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .cart-items{flex:1;padding:16px;}
+  .cart-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
+  .cart-item-emoji{font-size:1.8rem;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--cream);flex-shrink:0;}
+  .cart-item-info{flex:1;min-width:0;}
+  .cart-item-name{font-size:0.88rem;font-weight:700;color:var(--dark);}
+  .cart-item-price{font-size:0.8rem;color:var(--org2);font-weight:600;margin-top:2px;}
+  .qty-ctrl{display:flex;align-items:center;gap:8px;}
+  .qty-btn{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:white;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);font-weight:700;transition:all .15s;}
+  .qty-btn:hover{border-color:var(--org);color:var(--org);}
+  .qty-num{font-size:0.9rem;font-weight:800;color:var(--dark);min-width:20px;text-align:center;}
+  .cart-footer{padding:20px;border-top:2px solid var(--border);background:var(--cream);}
+  .cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .cart-total-label{font-size:0.9rem;font-weight:600;color:var(--sub);}
+  .cart-total-amount{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--dark);}
+  .checkout-btn{width:100%;padding:16px;background:var(--org);border:none;border-radius:14px;color:white;font-family:'Sora',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;letter-spacing:0.02em;transition:all .2s;}
+  .checkout-btn:hover{background:var(--org2);transform:translateY(-2px);}
+  .empty-cart{text-align:center;padding:60px 20px;color:var(--dim);}
+  .empty-cart .empty-icon{font-size:4rem;margin-bottom:16px;}
+
+  /* ── CHECKOUT ── */
+  .checkout-page{max-width:600px;margin:0 auto;padding:20px;}
+  .checkout-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--dark);margin-bottom:24px;}
+  .form-section{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+  .form-section-title{font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--org);margin-bottom:16px;}
+  .form-group{margin-bottom:14px;}
+  .form-label{display:block;font-size:0.78rem;font-weight:600;color:var(--sub);margin-bottom:6px;}
+  .form-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:0.9rem;color:var(--dark);background:var(--cream);outline:none;transition:border-color .2s;}
+  .form-input:focus{border-color:var(--org);}
+  .form-textarea{resize:vertical;min-height:80px;}
+  .map-section{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;}
+  .map-container{width:100%;height:240px;position:relative;background:#e8f4e8;}
+  .map-iframe{width:100%;height:100%;border:0;}
+  .map-controls{padding:16px;}
+  .loc-btn{width:100%;padding:13px;border:2px solid var(--border);border-radius:10px;background:var(--cream);font-family:'Sora',sans-serif;font-size:0.85rem;font-weight:600;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:10px;}
+  .loc-btn:hover{border-color:var(--org);color:var(--org);}
+  .loc-detected{background:rgba(37,211,102,0.08);border:1px solid var(--green);border-radius:8px;color:var(--green2);font-size:0.8rem;padding:10px 14px;margin-top:8px;display:flex;align-items:center;gap:6px;}
+  .order-summary{background:var(--cream);border-radius:12px;padding:16px;margin-bottom:0;}
+  .order-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+  .order-row:last-child{border-bottom:none;}
+  .order-row-name{font-size:0.85rem;font-weight:500;color:var(--dark);}
+  .order-row-price{font-size:0.85rem;font-weight:700;color:var(--org2);}
+  .order-total-row{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:2px solid var(--border);margin-top:4px;}
+  .order-total-label{font-size:0.9rem;font-weight:700;color:var(--dark);}
+  .order-total-price{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--dark);}
+
+  /* ── WHATSAPP BTN ── */
+  .whatsapp-btn{width:100%;padding:18px;background:var(--green);border:none;border-radius:14px;color:white;font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;letter-spacing:0.02em;box-shadow:0 4px 20px rgba(37,211,102,0.3);}
+  .whatsapp-btn:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(37,211,102,0.4);}
+  .wa-icon{font-size:1.3rem;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--sub);font-family:'Sora',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;padding:0;margin-bottom:20px;}
+  .back-btn:hover{color:var(--org);}
+
+  /* ── SUCCESS ── */
+  .success-page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:40px 20px;}
+  .success-icon{font-size:5rem;margin-bottom:24px;animation:bounce 1s ease infinite alternate;}
+  @keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-12px);}}
+  .success-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--dark);margin-bottom:12px;}
+  .success-msg{font-size:0.95rem;color:var(--sub);max-width:360px;line-height:1.7;margin-bottom:32px;}
+  .order-again-btn{padding:15px 36px;background:var(--org);border:none;border-radius:50px;color:white;font-family:'Sora',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;}
+  .order-again-btn:hover{background:var(--org2);}
+
+  /* ── TOAST ── */
+  .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark);color:white;padding:12px 24px;border-radius:50px;font-size:0.85rem;font-weight:600;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;white-space:nowrap;pointer-events:none;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .page-fade{animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ── STICKY CART BAR ── */
+  .sticky-bar{position:fixed;bottom:0;left:0;right:0;padding:12px 20px;background:var(--dark);z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 -4px 24px rgba(0,0,0,0.3);}
+  .sticky-bar-info .count{color:white;font-weight:700;font-size:0.95rem;}
+  .sticky-bar-info .total{color:var(--org);font-weight:800;font-size:1.1rem;}
+  .sticky-bar-btn{background:var(--org);border:none;border-radius:50px;padding:12px 24px;color:white;font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:all .2s;}
+  .sticky-bar-btn:hover{background:var(--org2);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+/* ════════════════════════════════════════
+   ⚙️  CONFIG — CHANGE THESE TO YOUR OWN
+   ════════════════════════════════════════ */
+const RESTAURANT_PHONE = '2348000000000'; // WhatsApp number with country code, no +
+const RESTAURANT_NAME  = 'Mummy Delicious';   // Used in the WhatsApp message
+const DELIVERY_FEE     = 500;             // Set to 0 to disable delivery fee
+
+/* ════════════════════════════════════════
+   🍽️  MENU DATA — Edit items here
+   ════════════════════════════════════════ */
+const MENU = [
+  // Rice
+  { id:1, cat:'Rice', img:'images/jollof rice.jpg', name:'Jollof Rice', price:2500, },
+  { id:2, cat:'Rice', img:'images/fried rice.jpg', name:'Fried Rice', price:2800, },
+
+
+  // Protein
+  { id:7, cat:'Protein', img:'images/grilled chicken.jpg', name:'Grilled Chicken', price:2500,  },
+  { id:8, cat:'Protein', img:'images/papper goat .jpg', name:'Peppered Goat', price:3200,  },
+  { id:9, cat:'Protein', img:'images/grilled fish.jpg', name:'Grilled Fish', price:3500,  },
+
+  
+  // Sides
+  { id:12, cat:'Sides', img:'images/moi moi.jpg', name:'Moi Moi', price:800, },
+  { id:13, cat:'Sides', img:'images/plantain dodo.jpg', name:'Plantain Dodo', price:700,  },
+  { id:14, cat:'Sides', img:'images/bolied egg.jpg', name:'Boiled Egg', price:500,  },
+
+  // Drinks
+  { id:15, cat:'Drinks', img:'images/fanta.jpg', name:'Fanta', price:1200,  },
+  { id:16, cat:'Drinks', img:'images/coca cola.jpg', name:'Coca Cola', price:800,  },
+  { id:17, cat:'Drinks', img:'images/exotic.jpg', name:'Exotic', price:1000,  },
+  { id:18, cat:'Drinks', img:'images/bottle water.jpg', name:'Bottle water', price:300, },
+  { id:19, cat:'Drinks', img:'images/hollandia.jpg', name:'Hollandia', price:800, },
+
+];
+
+const CATS = ['All', ...new Set(MENU.map(m => m.cat))];
+const fmt  = n => `₦${Number(n).toLocaleString()}`;
+
+/* ── TOAST ── */
+function Toast({ msg, show }) {
+  return <div className={`toast${show ? ' show' : ''}`}>✅ {msg}</div>;
+}
+
+/* ── FOOD CARD ── */
+function FoodCard({ item, onAdd, inCart }) {
+  return (
+    <div className="food-card">
+      <img src={item.img} alt={item.name} className="food-img-placeholder" />
+      <div className="food-info">
+        <div className="food-name">{item.name}</div>
+        <div className="food-desc">{item.desc}</div>
+        <div className="food-footer">
+          <div className="food-price">{fmt(item.price)}</div>
+          <button
+            className={`add-btn${inCart ? ' in-cart' : ''}`}
+            onClick={() => onAdd(item)}
+            title={inCart ? 'Add more' : 'Add to cart'}
+          >
+            {inCart ? '✓' : '+'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── CART PANEL ── */
+function CartPanel({ cart, onClose, onIncrease, onDecrease, onCheckout }) {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total    = subtotal + (cart.length > 0 ? DELIVERY_FEE : 0);
+  const count    = cart.reduce((s, i) => s + i.qty, 0);
+  return (
+    <div className="cart-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="cart-panel">
+        <div className="cart-header">
+          <h2>🛒 Your Order ({count})</h2>
+          <button className="close-btn" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="cart-items">
+          {cart.length === 0 ? (
+            <div className="empty-cart">
+              <div className="empty-icon">🍽️</div>
+              <p style={{fontWeight:600,fontSize:'1rem',marginBottom:8,color:'var(--dark)'}}>Nothing here yet</p>
+              <p style={{fontSize:'0.85rem'}}>Add some delicious items to get started!</p>
+            </div>
+          ) : cart.map(item => (
+            <div className="cart-item" key={item.id}>
+              <div className="cart-item-emoji">{item.emoji}</div>
+              <div className="cart-item-info">
+                <div className="cart-item-name">{item.name}</div>
+                <div className="cart-item-price">{fmt(item.price)} × {item.qty} = {fmt(item.price * item.qty)}</div>
+              </div>
+              <div className="qty-ctrl">
+                <button className="qty-btn" onClick={() => onDecrease(item.id)}>−</button>
+                <span className="qty-num">{item.qty}</span>
+                <button className="qty-btn" onClick={() => onIncrease(item.id)}>+</button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {cart.length > 0 && (
+          <div className="cart-footer">
+            <div style={{marginBottom:8,display:'flex',justifyContent:'space-between',fontSize:'0.82rem',color:'var(--sub)'}}>
+              <span>Subtotal</span><span style={{fontWeight:700}}>{fmt(subtotal)}</span>
+            </div>
+            {DELIVERY_FEE > 0 && (
+              <div style={{marginBottom:12,display:'flex',justifyContent:'space-between',fontSize:'0.82rem',color:'var(--sub)'}}>
+                <span>Delivery fee</span><span style={{fontWeight:700}}>{fmt(DELIVERY_FEE)}</span>
+              </div>
+            )}
+            <div className="cart-total">
+              <span className="cart-total-label">Total</span>
+              <span className="cart-total-amount">{fmt(total)}</span>
+            </div>
+            <button className="checkout-btn" onClick={onCheckout}>
+              Proceed to Checkout →
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── CHECKOUT PAGE ── */
+function CheckoutPage({ cart, onBack, onSuccess }) {
+  const [form, setForm]       = useState({ name:'', phone:'', address:'', note:'' });
+  const [locStatus, setLoc]   = useState(null); // null | loading | detected
+  const [errors, setErrors]   = useState({});
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total    = subtotal + (cart.length > 0 ? DELIVERY_FEE : 0);
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const getLocation = () => {
+    setLoc('loading');
+    if (!navigator.geolocation) {
+      setLoc(null);
+      alert('Geolocation not supported by your browser. Please enter your address manually.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        const text = `${lat.toFixed(5)}, ${lng.toFixed(5)} (GPS)`;
+        set('address', text);
+        setLoc('detected');
+      },
+      () => {
+        setLoc(null);
+        alert('Could not get location. Please type your address manually.');
+      }
+    );
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim())    e.name    = 'Please enter your full name';
+    if (!form.phone.trim())   e.phone   = 'Please enter your phone number';
+    if (!form.address.trim()) e.address = 'Please enter your delivery address';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const placeOrder = () => {
+    if (!validate()) return;
+
+    const itemLines = cart
+      .map(i => `  • ${i.name} ×${i.qty} — ${fmt(i.price * i.qty)}`)
+      .join('\n');
+
+    const message =
+`Hello ${RESTAURANT_NAME}! 🍽️
+
+I'd like to place an order:
+
+👤 *Name:* ${form.name}
+📞 *Phone:* ${form.phone}
+📍 *Address:* ${form.address}${form.note ? `\n📝 *Note:* ${form.note}` : ''}
+
+━━━━━━━━━━━━━━━
+🛒 *Order Details:*
+${itemLines}${DELIVERY_FEE > 0 ? `\n\n  Delivery fee: ${fmt(DELIVERY_FEE)}` : ''}
+
+💰 *TOTAL: ${fmt(total)}*
+━━━━━━━━━━━━━━━
+
+Please confirm my order. Thank you! 🙏`;
+
+    const url = `https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+    onSuccess();
+  };
+
+  return (
+    <div className="checkout-page page-fade">
+      <button className="back-btn" onClick={onBack}>← Back to Menu</button>
+      <h1 className="checkout-title">Checkout 🧾</h1>
+
+      {/* CONTACT DETAILS */}
+      <div className="form-section">
+        <div className="form-section-title">👤 Contact Details</div>
+        <div className="form-group">
+          <label className="form-label">Full Name *</label>
+          <input
+            className="form-input"
+            placeholder="e.g. Chukwuemeka Obi"
+            value={form.name}
+            onChange={e => set('name', e.target.value)}
+            style={errors.name ? {borderColor:'#ef4444'} : {}}
+          />
+          {errors.name && <p style={{color:'#ef4444',fontSize:'0.75rem',marginTop:4}}>{errors.name}</p>}
+        </div>
+        <div className="form-group" style={{marginBottom:0}}>
+          <label className="form-label">Phone Number *</label>
+          <input
+            className="form-input"
+            type="tel"
+            placeholder="e.g. 08012345678"
+            value={form.phone}
+            onChange={e => set('phone', e.target.value)}
+            style={errors.phone ? {borderColor:'#ef4444'} : {}}
+          />
+          {errors.phone && <p style={{color:'#ef4444',fontSize:'0.75rem',marginTop:4}}>{errors.phone}</p>}
+        </div>
+      </div>
+
+      {/* LOCATION + MAP */}
+      <div className="map-section">
+        <div className="form-section-title" style={{padding:'16px 16px 0'}}>📍 Delivery Location</div>
+        <div className="map-container">
+          {/* OpenStreetMap — replace bbox with your city coordinates */}
+          <iframe
+            className="map-iframe"
+            title="Delivery Map"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=3.2,6.4,3.6,6.65&layer=mapnik&marker=6.5244,3.3792"
+            allowFullScreen
+            loading="lazy"
+          />
+        </div>
+        <div className="map-controls">
+          <div className="form-group" style={{marginBottom:8}}>
+            <label className="form-label">Delivery Address *</label>
+            <input
+              className="form-input"
+              placeholder="e.g. 12 Allen Ave, Ikeja, Lagos"
+              value={form.address}
+              onChange={e => { set('address', e.target.value); setLoc(null); }}
+              style={errors.address ? {borderColor:'#ef4444'} : {}}
+            />
+            {errors.address && <p style={{color:'#ef4444',fontSize:'0.75rem',marginTop:4}}>{errors.address}</p>}
+          </div>
+          <button
+            className="loc-btn"
+            onClick={getLocation}
+            disabled={locStatus === 'loading'}
+          >
+            {locStatus === 'loading' ? '📡 Detecting your location...' : '📍 Use My Current Location'}
+          </button>
+          {locStatus === 'detected' && (
+            <div className="loc-detected">
+              ✅ Location detected! You can edit the address above if needed.
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* SPECIAL NOTE */}
+      <div className="form-section">
+        <div className="form-section-title">📝 Special Instructions</div>
+        <div className="form-group" style={{marginBottom:0}}>
+          <label className="form-label">Note (Optional)</label>
+          <textarea
+            className="form-input form-textarea"
+            placeholder='e.g. "No pepper please" · "Extra sauce" · "Call on arrival"'
+            value={form.note}
+            onChange={e => set('note', e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* ORDER SUMMARY */}
+      <div className="form-section">
+        <div className="form-section-title">🛒 Order Summary</div>
+        <div className="order-summary">
+          {cart.map(item => (
+            <div className="order-row" key={item.id}>
+              <span className="order-row-name">{item.emoji} {item.name} × {item.qty}</span>
+              <span className="order-row-price">{fmt(item.price * item.qty)}</span>
+            </div>
+          ))}
+          {DELIVERY_FEE > 0 && (
+            <div className="order-row">
+              <span className="order-row-name">🛵 Delivery fee</span>
+              <span className="order-row-price">{fmt(DELIVERY_FEE)}</span>
+            </div>
+          )}
+          <div className="order-total-row">
+            <span className="order-total-label">Total</span>
+            <span className="order-total-price">{fmt(total)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* PLACE ORDER */}
+      <button className="whatsapp-btn" onClick={placeOrder}>
+        <span className="wa-icon">💬</span>
+        Place Order via WhatsApp
+      </button>
+      <p style={{textAlign:'center',fontSize:'0.75rem',color:'var(--dim)',marginTop:12,lineHeight:1.6}}>
+        You'll be redirected to WhatsApp with your complete order.<br/>
+        We'll confirm and start preparing within minutes! 🚀
+      </p>
+    </div>
+  );
+}
+
+/* ── SUCCESS PAGE ── */
+function SuccessPage({ onReset }) {
+  return (
+    <div className="success-page page-fade">
+      <div className="success-icon">🎉</div>
+      <h2 className="success-title">Order Sent!</h2>
+      <p className="success-msg">
+        Your order has been sent to WhatsApp!<br/>
+        We'll confirm it shortly and start preparing your food. 🍽️
+      </p>
+      <button className="order-again-btn" onClick={onReset}>Order Again →</button>
+    </div>
+  );
+}
+
+/* ── MAIN APP ── */
+function App() {
+  const [cart,      setCart]    = useState([]);
+  const [cartOpen,  setCartOpen] = useState(false);
+  const [page,      setPage]    = useState('home'); // home | checkout | success
+  const [activeCat, setActiveCat] = useState('All');
+  const [toast,     setToast]   = useState({ show:false, msg:'' });
+
+  const showToast = msg => {
+    setToast({ show:true, msg });
+    setTimeout(() => setToast(t => ({ ...t, show:false })), 2000);
+  };
+
+  const addToCart = item => {
+    setCart(c => {
+      const ex = c.find(i => i.id === item.id);
+      return ex
+        ? c.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i)
+        : [...c, { ...item, qty: 1 }];
+    });
+    showToast(`${item.emoji} ${item.name} added!`);
+  };
+
+  const increase = id => setCart(c => c.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i));
+  const decrease = id => setCart(c => {
+    const item = c.find(i => i.id === id);
+    return item.qty === 1 ? c.filter(i => i.id !== id) : c.map(i => i.id === id ? { ...i, qty: i.qty - 1 } : i);
+  });
+
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+  const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0) + (cart.length > 0 ? DELIVERY_FEE : 0);
+  const filtered  = activeCat === 'All' ? MENU : MENU.filter(m => m.cat === activeCat);
+
+  /* ── SUCCESS ── */
+  if (page === 'success') return (
+    <>
+      <nav className="nav">
+        <span className="nav-brand">Mummy Delicious</span>
+      </nav>
+      <SuccessPage onReset={() => { setCart([]); setPage('home'); }} />
+    </>
+  );
+
+  /* ── CHECKOUT ── */
+  if (page === 'checkout') return (
+    <>
+      <nav className="nav">
+        <span className="nav-brand">ChopHouse<span> Lagos</span></span>
+      </nav>
+      <CheckoutPage
+        cart={cart}
+        onBack={() => setPage('home')}
+        onSuccess={() => setPage('success')}
+      />
+    </>
+  );
+
+  /* ── HOME ── */
+  return (
+    <>
+      {/* NAV */}
+      <nav className="nav">
+        <span className="nav-brand">Mummy Delicious</span>
+        <button className="cart-btn" onClick={() => setCartOpen(true)}>
+          🛒 Cart
+          {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+        </button>
+      </nav>
+
+      {/* HERO */}
+      <div className="hero">
+        <div style={{position:'relative',zIndex:1}}>
+          <div className="hero-tag">🔥 Order &amp; Pay via WhatsApp</div>
+          <h1>Ibadan flavor,<br/><em>Delivered Fresh.</em></h1>
+          <p>Authentic Nigerian cuisine · Ready in 30 mins · Min. order ₦1,500</p>
+        </div>
+      </div>
+
+      {/* CATEGORY FILTER */}
+      <div className="cats">
+        {CATS.map(cat => (
+          <button
+            key={cat}
+            className={`cat-btn${activeCat === cat ? ' active' : ''}`}
+            onClick={() => setActiveCat(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* MENU */}
+      <div className="section-title">
+        {activeCat === 'All' ? '🍽️ Full Menu' : activeCat}
+        <span style={{fontSize:'0.85rem',fontWeight:400,color:'var(--dim)',marginLeft:10}}>
+          ({filtered.length} items)
+        </span>
+      </div>
+      <div className="food-grid page-fade">
+        {filtered.map(item => (
+          <FoodCard
+            key={item.id}
+            item={item}
+            onAdd={addToCart}
+            inCart={cart.some(c => c.id === item.id)}
+          />
+        ))}
+      </div>
+
+      {/* STICKY BOTTOM BAR */}
+      {cartCount > 0 && !cartOpen && (
+        <div className="sticky-bar">
+          <div className="sticky-bar-info">
+            <div className="count">{cartCount} item{cartCount > 1 ? 's' : ''} selected</div>
+            <div className="total">{fmt(cartTotal)}</div>
+          </div>
+          <button className="sticky-bar-btn" onClick={() => setCartOpen(true)}>
+            View Cart →
+          </button>
+        </div>
+      )}
+
+      {/* CART PANEL */}
+      {cartOpen && (
+        <CartPanel
+          cart={cart}
+          onClose={() => setCartOpen(false)}
+          onIncrease={increase}
+          onDecrease={decrease}
+          onCheckout={() => { setCartOpen(false); setPage('checkout'); }}
+        />
+      )}
+
+      {/* TOAST */}
+      <Toast msg={toast.msg} show={toast.show} />
+
+      {/* SPACING FOR STICKY BAR */}
+      <div style={{height: cartCount > 0 ? 80 : 40}} />
+    </>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
