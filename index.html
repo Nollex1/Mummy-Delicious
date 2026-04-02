@@ -46,9 +46,21 @@
   .section-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--dark);padding:0 20px 16px;}
   .food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;padding:0 20px 24px;}
   @media(min-width:600px){.food-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}}
-  .food-card{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:all .25s;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
-  .food-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px var(--shadow);}
-  .food-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,var(--org3) 0%,#fed7aa 100%);}
+  .food-card{background:var(--white);
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    transition:all .25s;
+    box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+  .food-card:hover{transform:translateY(-4px);
+    box-shadow:0 8px 32px var(--shadow);}
+  .food-img-placeholder{width:100%;
+    aspect-ratio:4/3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.5rem;
+    background:linear-gradient(135deg,var(--org3) 0%,#fed7aa 100%);}
   .food-info{padding:12px;}
   .food-name{font-size:0.9rem;font-weight:700;color:var(--dark);margin-bottom:4px;line-height:1.3;}
   .food-desc{font-size:0.72rem;color:var(--dim);font-weight:300;line-height:1.4;margin-bottom:10px;}
@@ -157,27 +169,27 @@ const DELIVERY_FEE     = 500;             // Set to 0 to disable delivery fee
    ════════════════════════════════════════ */
 const MENU = [
   // Rice
-  { id:1, cat:'Rice', img:'images/jollof rice.jpg', name:'Jollof Rice', price:2500, },
-  { id:2, cat:'Rice', img:'images/fried rice.jpg', name:'Fried Rice', price:2800, },
+  { id:1, cat:'Rice', img:'images/jollof rice.jpg', name:'Jollof Rice', price:2000, },
+  { id:2, cat:'Rice', img:'images/fried rice.jpg', name:'Fried Rice', price:2500, },
 
 
   // Protein
   { id:7, cat:'Protein', img:'images/grilled chicken.jpg', name:'Grilled Chicken', price:2500,  },
-  { id:8, cat:'Protein', img:'images/papper goat .jpg', name:'Peppered Goat', price:3200,  },
-  { id:9, cat:'Protein', img:'images/grilled fish.jpg', name:'Grilled Fish', price:3500,  },
+  { id:8, cat:'Protein', img:'images/papper goat .jpg', name:'Peppered Goat', price:3000,  },
+  { id:9, cat:'Protein', img:'images/grilled fish.jpg', name:'Grilled Fish', price:2000,  },
 
   
   // Sides
   { id:12, cat:'Sides', img:'images/moi moi.jpg', name:'Moi Moi', price:800, },
-  { id:13, cat:'Sides', img:'images/plantain dodo.jpg', name:'Plantain Dodo', price:700,  },
+  { id:13, cat:'Sides', img:'images/plantain dodo.jpg', name:'Plantain Dodo', price:100,  },
   { id:14, cat:'Sides', img:'images/bolied egg.jpg', name:'Boiled Egg', price:500,  },
 
   // Drinks
-  { id:15, cat:'Drinks', img:'images/fanta.jpg', name:'Fanta', price:1200,  },
-  { id:16, cat:'Drinks', img:'images/coca cola.jpg', name:'Coca Cola', price:800,  },
-  { id:17, cat:'Drinks', img:'images/exotic.jpg', name:'Exotic', price:1000,  },
-  { id:18, cat:'Drinks', img:'images/bottle water.jpg', name:'Bottle water', price:300, },
-  { id:19, cat:'Drinks', img:'images/hollandia.jpg', name:'Hollandia', price:800, },
+  { id:15, cat:'Drinks', img:'images/fanta.jpg', name:'Fanta', price:600,  },
+  { id:16, cat:'Drinks', img:'images/coca cola.jpg', name:'Coca Cola', price:600,  },
+  { id:17, cat:'Drinks', img:'images/exotic.jpg', name:'Exotic', price:1800,  },
+  { id:18, cat:'Drinks', img:'images/bottle water.jpg', name:'Bottle water', price:500, },
+  { id:19, cat:'Drinks', img:'images/hollandia.jpg', name:'Hollandia', price:1800, },
 
 ];
 
